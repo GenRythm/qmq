@@ -4,11 +4,13 @@ use serde::{Serialize, Deserialize};
 
 //====================================================================================================================
 
-mod server;
-mod client;
+mod broker;
+mod endpoint;
+mod error;
 
-pub use server::start_server;
-pub use client::start_client;
+pub use broker::start_broker;
+pub use endpoint::QmqEndpoint;
+pub use error::{Result, QmqError};
 
 //====================================================================================================================
 
@@ -43,18 +45,18 @@ struct MQMessage {
     data: Vec<u8>,
 }
 
-struct ArcPointer<T>(Arc<AtomicPtr<T>>);
+pub struct ArcPointer<T>(Arc<AtomicPtr<T>>);
 impl<T> ArcPointer<T> {
-    fn new(inner: T) -> Self {
+    pub fn new(inner: T) -> Self {
         Self(Arc::new(AtomicPtr::new(Box::into_raw(Box::new(inner)))))
     }
-    fn inner(&self) -> &T {
+    pub fn inner(&self) -> &T {
         unsafe { &*self.0.load(Ordering::SeqCst) }
     }
-    fn inner_mut(&self) -> &'static mut T {
+    pub fn inner_mut(&self) -> &'static mut T {
         unsafe { &mut *self.0.load(Ordering::SeqCst) }
     }
-    fn clear(self) {
+    pub fn clear(self) {
         let _ = unsafe { Box::from_raw(self.0.load(Ordering::SeqCst)) };
         self.0.store(std::ptr::null_mut(), Ordering::Release);
     }

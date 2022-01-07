@@ -5,6 +5,6 @@ fn main() {
         .enable_all()
         .build()
         .unwrap()
-        .block_on(qmq::start_server());
+        .block_on(qmq::start_broker());
 }
 
