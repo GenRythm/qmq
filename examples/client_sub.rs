@@ -1,6 +1,4 @@
 
-const QMQ_SERVER: &str = "127.0.0.1:4433";
-
 fn main() {
     tokio::runtime::Builder::new_multi_thread()
         .worker_threads(12)
@@ -11,7 +9,7 @@ fn main() {
 }
 
 async fn event_loop() {
-    let endpoint = qmq::ArcPointer::new(qmq::QmqEndpoint::new(QMQ_SERVER).unwrap());
+    let endpoint = nonsense_util::ArcPointer::new(qmq::QmqEndpoint::new(qmq::QMQ_SERVER).unwrap());
     endpoint.inner_mut().register_topic("topic0").await
         .unwrap_or_else(|e| println!("[ERROR] register topic: {:#?}", e));
 

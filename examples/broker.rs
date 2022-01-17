@@ -1,10 +1,7 @@
 
 fn main() {
-    tokio::runtime::Builder::new_multi_thread()
-        .worker_threads(12)
-        .enable_all()
-        .build()
-        .unwrap()
-        .block_on(qmq::start_broker());
+    let size = std::mem::size_of::<usize>();
+    println!("'usize' size[{}]", size);
+    println!("'usize' max[{}]", usize::MAX);
 }
 
