@@ -16,7 +16,7 @@ use futures_util::{StreamExt, stream::FuturesUnordered};
 use nonsense_util::ArcPointer;
 use crate::{
     NetMessage, MQMessage, BlockOn, Result, QmqError,
-    QMQ_SERVER, QMQ_QUIC_PRTOCOL, CERT_DIRECTORY, MAX_UNI_CLIENTS,
+    QMQ_QUIC_PRTOCOL, CERT_DIRECTORY, MAX_UNI_CLIENTS,
 };
 
 //====================================================================================================================
@@ -26,8 +26,8 @@ type TopicMap = HashMap<String, HashSet<usize>>;
 
 //====================================================================================================================
 
-pub async fn start_broker() {
-    let (_, mut incoming) = open_listening().await.expect("failed to open listening");
+pub async fn start_broker(listen: SocketAddr) {
+    let (_, mut incoming) = open_listening(listen).await.expect("failed to open listening");
     let (update_tx, mut update_rx) = mpsc::channel::<()>(100);
     let topic_map: ArcPointer<TopicMap> = ArcPointer::new(HashMap::new());
     let client_map: ArcPointer<ClientMap> = ArcPointer::new(HashMap::new());
@@ -90,7 +90,7 @@ pub async fn start_broker() {
     client_map.clear();
 }
 
-async fn open_listening() -> Result<(Endpoint, Incoming)> {
+async fn open_listening(listen: SocketAddr) -> Result<(Endpoint, Incoming)> {
 
     let path = PathBuf::from(CERT_DIRECTORY);
     let cert_path = path.join("cert.der");
@@ -98,7 +98,7 @@ async fn open_listening() -> Result<(Endpoint, Incoming)> {
     let (cert, key) = match fs::read(&cert_path).and_then(|x| Ok((x, fs::read(&key_path)?))) {
         Ok(x) => x,
         Err(ref e) => if e.kind() == io::ErrorKind::NotFound {
-            let cert = rcgen::generate_simple_self_signed(vec!["genrytm.cf".into(), "localhost".into()])?;
+            let cert = rcgen::generate_simple_self_signed(vec!["genrythm.cf".into(), "localhost".into()])?;
             let key = cert.serialize_private_key_der();
             let cert = cert.serialize_der()?;
             fs::create_dir_all(&path)?;
@@ -127,8 +127,7 @@ async fn open_listening() -> Result<(Endpoint, Incoming)> {
         .keep_alive_interval(Some(Duration::from_millis(2_000)));
     server_config.use_retry(true);
 
-    let socket: SocketAddr = QMQ_SERVER.parse()?;
-    let (endpoint, incoming) = quinn::Endpoint::server(server_config, socket)?;
+    let (endpoint, incoming) = quinn::Endpoint::server(server_config, listen)?;
 
     Ok((endpoint, incoming))
 }

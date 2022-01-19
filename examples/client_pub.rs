@@ -11,7 +11,8 @@ fn main() {
 }
 
 async fn event_loop() {
-    let endpoint = nonsense_util::ArcPointer::new(qmq::QmqEndpoint::new(qmq::QMQ_SERVER).unwrap());
+    let server = "localhost:6666".parse().unwrap();
+    let endpoint = nonsense_util::ArcPointer::new(qmq::QmqEndpoint::connect(server).unwrap());
 
     let debug_count = Arc::new(AtomicU64::new(0));
     let mut debug_update = tokio::time::interval(Duration::from_secs(1));

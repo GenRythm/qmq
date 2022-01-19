@@ -9,7 +9,8 @@ fn main() {
 }
 
 async fn event_loop() {
-    let endpoint = nonsense_util::ArcPointer::new(qmq::QmqEndpoint::new(qmq::QMQ_SERVER).unwrap());
+    let server = "localhost:6666".parse().unwrap();
+    let endpoint = nonsense_util::ArcPointer::new(qmq::QmqEndpoint::connect(server).unwrap());
     endpoint.inner_mut().register_topic("topic0").await
         .unwrap_or_else(|e| println!("[ERROR] register topic: {:#?}", e));
 

@@ -1,9 +1,9 @@
 
 use std::{
     fs,
-    // net::SocketAddr,
     path::PathBuf,
     sync::Arc,
+    net::SocketAddr,
 };
 use futures_util::{AsyncWriteExt, StreamExt};
 use quinn::{
@@ -22,8 +22,7 @@ pub struct QmqEndpoint {
     conn: Option<NewConnection>,
 }
 impl QmqEndpoint {
-    pub fn new(addr: &str) -> Result<Self> {
-        let addr = addr.parse()?;
+    pub fn connect(addr: SocketAddr) -> Result<Self> {
         let endpoint = open_client()?;
         let new_conn = endpoint
             .connect(addr, "localhost")?

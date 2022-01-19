@@ -13,7 +13,6 @@ pub use error::{Result, QmqError};
 
 //====================================================================================================================
 
-pub const QMQ_SERVER: &str = "192.168.1.111:9010";
 const CERT_DIRECTORY: &str = "config/cert";
 const QMQ_QUIC_PRTOCOL: &[&[u8]] = &[b"QUIC_MESSAGE_QUEUE"];
 const MAX_UNI_CLIENTS: u8 = 100;
