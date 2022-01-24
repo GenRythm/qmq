@@ -5,6 +5,6 @@ fn main() {
         .enable_all()
         .build()
         .unwrap()
-        .block_on(qmq::start_broker("[::1]:9010".parse().expect("failed to parse socker address")));
+        .block_on(qmq::start_broker("0.0.0.0:9010".parse().expect("failed to parse socker address")));
 }
 
