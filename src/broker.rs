@@ -13,9 +13,8 @@ use std::{
 use quinn::{Incoming, Endpoint, NewConnection};
 use tokio::sync::mpsc::{self, Sender};
 use futures_util::{StreamExt, stream::FuturesUnordered};
-use nonsense_util::ArcPointer;
 use crate::{
-    NetMessage, MQMessage, BlockOn, Result, QmqError,
+    NetMessage, MQMessage, BlockOn, ArcPointer, Result, QmqError,
     QMQ_QUIC_PRTOCOL, CERT_DIRECTORY, MAX_UNI_CLIENTS,
 };
 

@@ -16,5 +16,9 @@ rcgen = "0.8"
 serde = { version = "1", features = ["derive"] }
 bincode = "1"
 
-nonsense-util = { path = "../nonsense-util" }
+#######################################################################################################################
+
+[[bin]]
+name = "broker"
+path = "src/bin/broker.rs"
 
